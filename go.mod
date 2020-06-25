@@ -7,3 +7,5 @@ require (
 	github.com/whywaita/satelit v0.0.0-20200625081821-d458a96b91cb
 	google.golang.org/grpc v1.30.0
 )
+
+replace google.golang.org/grpc => google.golang.org/grpc v1.29.1
