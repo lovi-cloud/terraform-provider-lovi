@@ -19,8 +19,9 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"satelit_volume":            resourceVolume(),
+			"satelit_volume":            resourceSatelitVolume(),
 			"satelit_volume_attachment": resourceSatelitVolumeAttachment(),
+			"satelit_virtual_machine":   resourceSatelitVirtualMachine(),
 		},
 		ConfigureFunc: configureProvider,
 	}

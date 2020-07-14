@@ -10,11 +10,11 @@ import (
 	satelitpb "github.com/whywaita/satelit/api/satelit"
 )
 
-func resourceVolume() *schema.Resource {
+func resourceSatelitVolume() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceVolumeCreate,
-		Read:   resourceVolumeRead,
-		Delete: resourceVolumeDelete,
+		Create: resourceSatelitVolumeCreate,
+		Read:   resourceSatelitVolumeRead,
+		Delete: resourceSatelitVolumeDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -23,9 +23,10 @@ func resourceVolume() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				ValidateFunc: validation.IsUUID,
 			},
 			"size": {
 				Type:         schema.TypeInt,
@@ -38,7 +39,7 @@ func resourceVolume() *schema.Resource {
 	}
 }
 
-func resourceVolumeCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSatelitVolumeCreate(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -56,15 +57,15 @@ func resourceVolumeCreate(d *schema.ResourceData, meta interface{}) error {
 
 	d.SetId(volume.Id)
 
-	return resourceVolumeRead(d, meta)
+	return resourceSatelitVolumeRead(d, meta)
 }
 
-func resourceVolumeRead(d *schema.ResourceData, meta interface{}) error {
+func resourceSatelitVolumeRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
 	req := &satelitpb.ShowVolumeRequest{
-		Uuid: d.Id(),
+		Id: d.Id(),
 	}
 	resp, err := client.ShowVolume(context.Background(), req)
 	if err != nil {
@@ -78,7 +79,7 @@ func resourceVolumeRead(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func resourceVolumeDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSatelitVolumeDelete(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 

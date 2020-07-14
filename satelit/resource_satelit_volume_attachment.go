@@ -59,7 +59,7 @@ func resourceSatelitVolumeAttachmentRead(d *schema.ResourceData, meta interface{
 	hostname := d.Get("hostname").(string)
 
 	req := &satelitpb.ShowVolumeRequest{
-		Uuid: volumeID,
+		Id: volumeID,
 	}
 	resp, err := client.ShowVolume(context.Background(), req)
 	if err != nil {
