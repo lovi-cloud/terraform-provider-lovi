@@ -1,4 +1,4 @@
-package satelit
+package lovi
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 	satelitpb "github.com/whywaita/satelit/api/satelit"
 )
 
-func resourceSatelitVolume() *schema.Resource {
+func resourceLoviVolume() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSatelitVolumeCreate,
-		Read:   resourceSatelitVolumeRead,
-		Delete: resourceSatelitVolumeDelete,
+		Create: resourceLoviVolumeCreate,
+		Read:   resourceLoviVolumeRead,
+		Delete: resourceLoviVolumeDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -39,7 +39,7 @@ func resourceSatelitVolume() *schema.Resource {
 	}
 }
 
-func resourceSatelitVolumeCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeCreate(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -57,10 +57,10 @@ func resourceSatelitVolumeCreate(d *schema.ResourceData, meta interface{}) error
 
 	d.SetId(volume.Id)
 
-	return resourceSatelitVolumeRead(d, meta)
+	return resourceLoviVolumeRead(d, meta)
 }
 
-func resourceSatelitVolumeRead(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -79,7 +79,7 @@ func resourceSatelitVolumeRead(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func resourceSatelitVolumeDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeDelete(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 

@@ -1,4 +1,4 @@
-package satelit
+package lovi
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
-func resourceSatelitVirtualMachine() *schema.Resource {
+func resourceLoviVirtualMachine() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSatelitVirtualMachineCreate,
-		Read:   resourceSatelitVirtualMachineRead,
-		Delete: resourceSatelitVirtualMachineDelete,
+		Create: resourceLoviVirtualMachineCreate,
+		Read:   resourceLoviVirtualMachineRead,
+		Delete: resourceLoviVirtualMachineDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -62,7 +62,7 @@ func resourceSatelitVirtualMachine() *schema.Resource {
 	}
 }
 
-func resourceSatelitVirtualMachineCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineCreate(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -89,10 +89,10 @@ func resourceSatelitVirtualMachineCreate(d *schema.ResourceData, meta interface{
 	vmUUID := resp.Uuid
 	d.SetId(vmUUID)
 
-	return resourceSatelitVirtualMachineRead(d, meta)
+	return resourceLoviVirtualMachineRead(d, meta)
 }
 
-func resourceSatelitVirtualMachineRead(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -112,7 +112,7 @@ func resourceSatelitVirtualMachineRead(d *schema.ResourceData, meta interface{})
 	return nil
 }
 
-func resourceSatelitVirtualMachineDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineDelete(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 

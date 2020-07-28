@@ -1,4 +1,4 @@
-package satelit
+package lovi
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Config is config of terraform-provider-satelit
+// Config is config of terraform-provider-lovi
 type Config struct {
 	APIEndpoint string
 

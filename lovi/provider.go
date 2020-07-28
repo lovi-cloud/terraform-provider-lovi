@@ -1,4 +1,4 @@
-package satelit
+package lovi
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -19,9 +19,9 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"satelit_volume":            resourceSatelitVolume(),
-			"satelit_volume_attachment": resourceSatelitVolumeAttachment(),
-			"satelit_virtual_machine":   resourceSatelitVirtualMachine(),
+			"lovi_volume":            resourceLoviVolume(),
+			"lovi_volume_attachment": resourceLoviVolumeAttachment(),
+			"lovi_virtual_machine":   resourceLoviVirtualMachine(),
 		},
 		ConfigureFunc: configureProvider,
 	}

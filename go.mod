@@ -1,10 +1,10 @@
-module github.com/whywaita/terraform-provider-satelit
+module github.com/whywaita/terraform-provider-lovi
 
 go 1.14
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk v1.14.0
-	github.com/whywaita/satelit v0.0.0-20200625081821-d458a96b91cb
+	github.com/whywaita/satelit v0.0.0-20200709101056-74c7b1556d9b
 	google.golang.org/grpc v1.30.0
 )
 

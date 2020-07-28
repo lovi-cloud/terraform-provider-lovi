@@ -1,4 +1,4 @@
-package satelit
+package lovi
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 	satelitpb "github.com/whywaita/satelit/api/satelit"
 )
 
-func resourceSatelitVolumeAttachment() *schema.Resource {
+func resourceLoviVolumeAttachment() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSatelitVolumeAttachmentCreate,
-		Read:   resourceSatelitVolumeAttachmentRead,
-		Delete: resourceSatelitVolumeAttachmentDelete,
+		Create: resourceLoviVolumeAttachmentCreate,
+		Read:   resourceLoviVolumeAttachmentRead,
+		Delete: resourceLoviVolumeAttachmentDelete,
 
 		Schema: map[string]*schema.Schema{
 			"hostname": {
@@ -31,7 +31,7 @@ func resourceSatelitVolumeAttachment() *schema.Resource {
 	}
 }
 
-func resourceSatelitVolumeAttachmentCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentCreate(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -48,10 +48,10 @@ func resourceSatelitVolumeAttachmentCreate(d *schema.ResourceData, meta interfac
 	}
 
 	d.SetId(resource.PrefixedUniqueId(fmt.Sprintf("%s-%s", volumeID, hostname)))
-	return resourceSatelitVolumeAttachmentRead(d, meta)
+	return resourceLoviVolumeAttachmentRead(d, meta)
 }
 
-func resourceSatelitVolumeAttachmentRead(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
@@ -75,7 +75,7 @@ func resourceSatelitVolumeAttachmentRead(d *schema.ResourceData, meta interface{
 	return nil
 }
 
-func resourceSatelitVolumeAttachmentDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentDelete(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	client := config.SatelitClient
 
