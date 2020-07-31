@@ -1,12 +1,15 @@
 package main
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/plugin"
-
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 	"github.com/whywaita/terraform-provider-lovi/lovi"
 )
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: lovi.Provider})
+		ProviderFunc: func() *schema.Provider {
+			return lovi.Provider()
+		},
+	})
 }

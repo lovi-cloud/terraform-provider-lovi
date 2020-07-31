@@ -2,21 +2,24 @@ package lovi
 
 import (
 	"context"
+	"fmt"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 
 	satelitpb "github.com/whywaita/satelit/api/satelit"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceLoviVirtualMachine() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceLoviVirtualMachineCreate,
-		Read:   resourceLoviVirtualMachineRead,
-		Delete: resourceLoviVirtualMachineDelete,
+		CreateContext: resourceLoviVirtualMachineCreate,
+		ReadContext:   resourceLoviVirtualMachineRead,
+		DeleteContext: resourceLoviVirtualMachineDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Timeouts: &schema.ResourceTimeout{
 			Default: schema.DefaultTimeout(60 * time.Second),
@@ -62,9 +65,10 @@ func resourceLoviVirtualMachine() *schema.Resource {
 	}
 }
 
-func resourceLoviVirtualMachineCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	name := d.Get("name").(string)
 	vcpus := d.Get("vcpus").(int)
@@ -81,27 +85,39 @@ func resourceLoviVirtualMachineCreate(d *schema.ResourceData, meta interface{}) 
 		SourceImageId:  sourceImageID,
 		HypervisorName: hypervisorName,
 	}
-	resp, err := client.AddVirtualMachine(context.Background(), req)
+	resp, err := client.AddVirtualMachine(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call AddVirtualMachine: %v", err),
+		})
+
+		return diags
 	}
 
 	vmUUID := resp.Uuid
 	d.SetId(vmUUID)
+	resourceLoviVirtualMachineRead(ctx, d, meta)
 
-	return resourceLoviVirtualMachineRead(d, meta)
+	return diags
 }
 
-func resourceLoviVirtualMachineRead(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	req := &satelitpb.ShowVirtualMachineRequest{
 		Uuid: d.Id(),
 	}
-	resp, err := client.ShowVirtualMachine(context.Background(), req)
+	resp, err := client.ShowVirtualMachine(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call ShowVirtualMachine: %v", err),
+		})
+
+		return diags
 	}
 
 	d.Set("name", resp.VirtualMachine.Name)
@@ -109,21 +125,27 @@ func resourceLoviVirtualMachineRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("memory_kib", resp.VirtualMachine.MemoryKib)
 	d.Set("hypervisor_name", resp.VirtualMachine.HypervisorName)
 
-	return nil
+	return diags
 }
 
-func resourceLoviVirtualMachineDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVirtualMachineDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	req := &satelitpb.DeleteVirtualMachineRequest{
 		Uuid: d.Id(),
 	}
-	_, err := client.DeleteVirtualMachine(context.Background(), req)
+	_, err := client.DeleteVirtualMachine(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call DeleteVirtualMachine: %v", err),
+		})
+
+		return diags
 	}
 
 	d.SetId("")
-	return nil
+	return diags
 }

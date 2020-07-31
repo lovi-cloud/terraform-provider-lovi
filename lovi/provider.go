@@ -1,14 +1,18 @@
 package lovi
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"context"
+	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var descriptions map[string]string
 
 // Provider provide schema
-func Provider() terraform.ResourceProvider {
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_endpoint": {
@@ -23,7 +27,7 @@ func Provider() terraform.ResourceProvider {
 			"lovi_volume_attachment": resourceLoviVolumeAttachment(),
 			"lovi_virtual_machine":   resourceLoviVirtualMachine(),
 		},
-		ConfigureFunc: configureProvider,
+		ConfigureContextFunc: providerConfigure,
 	}
 }
 
@@ -33,14 +37,21 @@ func init() {
 	}
 }
 
-func configureProvider(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
 	config := Config{
 		APIEndpoint: d.Get("api_endpoint").(string),
 	}
 
 	if err := config.LoadAndValidate(); err != nil {
-		return nil, err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to load and validate config: %v", err),
+		})
+
+		return nil, diags
 	}
 
-	return &config, nil
+	return &config, diags
 }
