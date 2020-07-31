@@ -5,6 +5,9 @@ on:
       - "**"
   pull_request: {}
 
+env:
+  GOPRIVATE: "github.com/whywaita/*"
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
