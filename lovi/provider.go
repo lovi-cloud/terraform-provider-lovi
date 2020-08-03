@@ -28,6 +28,7 @@ func Provider() *schema.Provider {
 			"lovi_virtual_machine":   resourceLoviVirtualMachine(),
 			"lovi_subnet":            resourceLoviSubnet(),
 			"lovi_bridge":            resourceLoviBridge(),
+			"lovi_internal_bridge":   resourceLoviInternalBridge(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
