@@ -29,6 +29,7 @@ func Provider() *schema.Provider {
 			"lovi_subnet":            resourceLoviSubnet(),
 			"lovi_bridge":            resourceLoviBridge(),
 			"lovi_internal_bridge":   resourceLoviInternalBridge(),
+			"lovi_address":           resourceLoviAddress(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
