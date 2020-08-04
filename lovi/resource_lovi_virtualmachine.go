@@ -3,7 +3,6 @@ package lovi
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 
@@ -21,9 +20,9 @@ func resourceLoviVirtualMachine() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Timeouts: &schema.ResourceTimeout{
-			Default: schema.DefaultTimeout(60 * time.Second),
-		},
+		//Timeouts: &schema.ResourceTimeout{
+		//	Default: schema.DefaultTimeout(60 * time.Second),
+		//},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
