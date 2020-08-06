@@ -4,17 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	satelitpb "github.com/whywaita/satelit/api/satelit"
 )
 
 func resourceLoviVolumeAttachment() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceLoviVolumeAttachmentCreate,
-		Read:   resourceLoviVolumeAttachmentRead,
-		Delete: resourceLoviVolumeAttachmentDelete,
+		CreateContext: resourceLoviVolumeAttachmentCreate,
+		ReadContext:   resourceLoviVolumeAttachmentRead,
+		DeleteContext: resourceLoviVolumeAttachmentDelete,
 
 		Schema: map[string]*schema.Schema{
 			"hostname": {
@@ -31,9 +33,10 @@ func resourceLoviVolumeAttachment() *schema.Resource {
 	}
 }
 
-func resourceLoviVolumeAttachmentCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	volumeID := d.Get("volume_id").(string)
 	hostname := d.Get("hostname").(string)
@@ -42,18 +45,26 @@ func resourceLoviVolumeAttachmentCreate(d *schema.ResourceData, meta interface{}
 		Id:       volumeID,
 		Hostname: hostname,
 	}
-	_, err := client.AttachVolume(context.Background(), req)
+	_, err := client.AttachVolume(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call AttachVolume: %v", err),
+		})
+
+		return diags
 	}
 
 	d.SetId(resource.PrefixedUniqueId(fmt.Sprintf("%s-%s", volumeID, hostname)))
-	return resourceLoviVolumeAttachmentRead(d, meta)
+	resourceLoviVolumeAttachmentRead(ctx, d, meta)
+
+	return diags
 }
 
-func resourceLoviVolumeAttachmentRead(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	volumeID := d.Get("volume_id").(string)
 	hostname := d.Get("hostname").(string)
@@ -61,9 +72,14 @@ func resourceLoviVolumeAttachmentRead(d *schema.ResourceData, meta interface{}) 
 	req := &satelitpb.ShowVolumeRequest{
 		Id: volumeID,
 	}
-	resp, err := client.ShowVolume(context.Background(), req)
+	resp, err := client.ShowVolume(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call ShowVolume: %v", err),
+		})
+
+		return diags
 		// TODO: check not found (need to delete if not found)
 	}
 	volume := resp.Volume
@@ -72,23 +88,29 @@ func resourceLoviVolumeAttachmentRead(d *schema.ResourceData, meta interface{}) 
 		d.SetId("")
 	}
 
-	return nil
+	return diags
 }
 
-func resourceLoviVolumeAttachmentDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceLoviVolumeAttachmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	client := config.SatelitClient
+	var diags diag.Diagnostics
 
 	volumeID := d.Get("volume_id").(string)
 
 	req := &satelitpb.DetachVolumeRequest{
 		Id: volumeID,
 	}
-	_, err := client.DetachVolume(context.Background(), req)
+	_, err := client.DetachVolume(ctx, req)
 	if err != nil {
-		return err
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call DetachVolume: %v", err),
+		})
+
+		return diags
 	}
 	d.SetId("")
 
-	return nil
+	return diags
 }

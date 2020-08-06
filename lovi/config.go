@@ -18,7 +18,7 @@ type Config struct {
 // LoadAndValidate performs to connect and init configuration
 func (c *Config) LoadAndValidate() error {
 	if c.APIEndpoint == "" {
-		return errors.New("api_endpoint must be set")
+		return errors.New("SATELIT_API_ENDPOINT must be set")
 	}
 
 	conn, err := grpc.Dial(c.APIEndpoint, grpc.WithBlock(), grpc.WithInsecure())
