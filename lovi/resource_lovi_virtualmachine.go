@@ -98,6 +98,18 @@ func resourceLoviVirtualMachineCreate(ctx context.Context, d *schema.ResourceDat
 	d.SetId(vmUUID)
 	resourceLoviVirtualMachineRead(ctx, d, meta)
 
+	reqStart := &satelitpb.StartVirtualMachineRequest{
+		Uuid: vmUUID,
+	}
+	if _, err := client.StartVirtualMachine(ctx, reqStart); err != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("failed to call StartVirtualMachine: %v", err),
+		})
+
+		return diags
+	}
+
 	return diags
 }
 
