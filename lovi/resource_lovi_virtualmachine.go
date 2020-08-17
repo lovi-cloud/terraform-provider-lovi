@@ -64,7 +64,7 @@ func resourceLoviVirtualMachine() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true, // TODO: will be false when implement live update
-				Default:      0,
+				Default:      0,    // 0 is unlimited
 				ValidateFunc: validation.IntAtLeast(1),
 			},
 			"write_bytes_sec": {
