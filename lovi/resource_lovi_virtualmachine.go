@@ -60,6 +60,34 @@ func resourceLoviVirtualMachine() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"read_bytes_sec": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true, // TODO: will be false when implement live update
+				Default:      0,    // 0 is unlimited
+				ValidateFunc: validation.IntAtLeast(1),
+			},
+			"write_bytes_sec": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				Default:      0,
+				ValidateFunc: validation.IntAtLeast(1),
+			},
+			"read_iops_sec": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				Default:      0,
+				ValidateFunc: validation.IntAtLeast(1),
+			},
+			"write_iops_sec": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ForceNew:     true,
+				Default:      0,
+				ValidateFunc: validation.IntAtLeast(1),
+			},
 		},
 	}
 }
@@ -75,6 +103,10 @@ func resourceLoviVirtualMachineCreate(ctx context.Context, d *schema.ResourceDat
 	rootVolumeGB := d.Get("root_volume_gb").(int)
 	sourceImageID := d.Get("source_image_id").(string)
 	hypervisorName := d.Get("hypervisor_name").(string)
+	readBytesSec := d.Get("read_bytes_sec").(int)
+	writeBytesSec := d.Get("write_bytes_sec").(int)
+	readIOPSSec := d.Get("read_iops_sec").(int)
+	writeIOPSSec := d.Get("write_iops_sec").(int)
 
 	req := &satelitpb.AddVirtualMachineRequest{
 		Name:           name,
@@ -83,6 +115,10 @@ func resourceLoviVirtualMachineCreate(ctx context.Context, d *schema.ResourceDat
 		RootVolumeGb:   uint32(rootVolumeGB),
 		SourceImageId:  sourceImageID,
 		HypervisorName: hypervisorName,
+		ReadBytesSec:   uint32(readBytesSec),
+		WriteBytesSec:  uint32(writeBytesSec),
+		ReadIopsSec:    uint32(readIOPSSec),
+		WriteIopsSec:   uint32(writeIOPSSec),
 	}
 	resp, err := client.AddVirtualMachine(ctx, req)
 	if err != nil {
@@ -135,6 +171,10 @@ func resourceLoviVirtualMachineRead(ctx context.Context, d *schema.ResourceData,
 	d.Set("vcpus", resp.VirtualMachine.Vcpus)
 	d.Set("memory_kib", resp.VirtualMachine.MemoryKib)
 	d.Set("hypervisor_name", resp.VirtualMachine.HypervisorName)
+	d.Set("read_bytes_sec", resp.VirtualMachine.ReadBytesSec)
+	d.Set("write_bytes_sec", resp.VirtualMachine.WriteBytesSec)
+	d.Set("read_iops_sec", resp.VirtualMachine.ReadIopsSec)
+	d.Set("write_iops_sec", resp.VirtualMachine.WriteIopsSec)
 
 	return diags
 }
