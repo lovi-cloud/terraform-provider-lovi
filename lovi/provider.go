@@ -22,6 +22,11 @@ func Provider() *schema.Provider {
 				Required:    true,
 			},
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"lovi_subnet":          dataSourceLoviSubnet(),
+			"lovi_bridge":          dataSourceLoviBridge(),
+			"lovi_internal_bridge": dataSourceInternalBridge(),
+		},
 		ResourcesMap: map[string]*schema.Resource{
 			"lovi_volume":               resourceLoviVolume(),
 			"lovi_volume_attachment":    resourceLoviVolumeAttachment(),
