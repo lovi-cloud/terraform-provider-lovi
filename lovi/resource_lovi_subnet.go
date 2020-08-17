@@ -122,6 +122,8 @@ func resourceLoviSubnetRead(ctx context.Context, d *schema.ResourceData, meta in
 			Severity: diag.Error,
 			Summary:  fmt.Sprintf("failed to call GetSubnet: %v", err),
 		})
+
+		return diags
 	}
 
 	d.Set("name", resp.Subnet.Name)
