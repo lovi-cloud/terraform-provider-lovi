@@ -35,6 +35,12 @@ func resourceLoviAddress() *schema.Resource {
 				Computed: true,
 				Optional: true,
 			},
+			"fixed_ip": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ForceNew:     true,
+				ValidateFunc: validation.IsIPv4Address,
+			},
 		},
 	}
 }
@@ -46,6 +52,7 @@ func resourceLoviAddressCreate(ctx context.Context, d *schema.ResourceData, meta
 
 	req := &satelitpb.CreateAddressRequest{
 		SubnetId: d.Get("subnet_id").(string),
+		FixedIp:  d.Get("fixed_ip").(string),
 	}
 	resp, err := client.CreateAddress(ctx, req)
 	if err != nil {
