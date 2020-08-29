@@ -4,6 +4,9 @@ on:
     branches:
       - "master"
 
+env:
+  GOPRIVATE: "github.com/whywaita/*"
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -16,6 +19,9 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.x
+      - name: Granting private modules access
+        run: |
+          git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
       - name: goreleaser check
         continue-on-error: true
         uses: goreleaser/goreleaser-action@v2
