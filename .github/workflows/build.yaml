@@ -27,10 +27,10 @@ jobs:
           go-version: 1.x
       - name: Granting private modules access
         run: |
-          GO111MODULE=off GOBIN=$(pwd)/bin git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
+          git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
       - name: lint
         run: |
-          go get golang.org/x/lint/golint
+          GO111MODULE=off GOBIN=$(pwd)/bin go get golang.org/x/lint/golint
           bin/golint -set_exit_status ./...
       - name: vet
         run: |
