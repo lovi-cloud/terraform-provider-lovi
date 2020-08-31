@@ -39,13 +39,9 @@ jobs:
         run: go build .
 
   goreleaser-check:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - ubuntu-18.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
