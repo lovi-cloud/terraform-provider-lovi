@@ -15,7 +15,6 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - windows-latest
           - macos-latest
     steps:
       - name: checkout
@@ -28,14 +27,13 @@ jobs:
           go-version: 1.x
       - name: Granting private modules access
         run: |
-          git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
+          GOBIN=$(pwd)/bin git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
       - name: lint
         run: |
           go get golang.org/x/lint/golint
           bin/golint -set_exit_status ./...
         env:
           GO111MODULE: off
-          GOBIN: $(pwd)/bin
       - name: vet
         run: |
           go vet ./...
