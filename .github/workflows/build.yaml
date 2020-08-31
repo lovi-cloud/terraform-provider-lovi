@@ -31,8 +31,11 @@ jobs:
           git config --global url."https://whywaita:${{ secrets.TOKEN }}@github.com/whywaita".insteadOf "https://github.com/whywaita"
       - name: lint
         run: |
-          GO111MODULE=off GOBIN=$(pwd)/bin go get golang.org/x/lint/golint
+          go get golang.org/x/lint/golint
           bin/golint -set_exit_status ./...
+        env:
+          GO111MODULE: off
+          GOBIN: $(pwd)/bin
       - name: vet
         run: |
           go vet ./...
