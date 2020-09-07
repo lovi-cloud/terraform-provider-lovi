@@ -37,6 +37,7 @@ func Provider() *schema.Provider {
 			"lovi_address":              resourceLoviAddress(),
 			"lovi_lease":                resourceLoviLease(),
 			"lovi_interface_attachment": resourceLoviInterfaceAttachment(),
+			"lovi_cpu_pinning_group":    resourceLoviCPUPinningGroup(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
