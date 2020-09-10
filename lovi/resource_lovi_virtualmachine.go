@@ -94,6 +94,12 @@ func resourceLoviVirtualMachine() *schema.Resource {
 				ForceNew: true,
 				Default:  "",
 			},
+			"europa_backend_name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "europa's backend name",
+			},
 		},
 	}
 }
@@ -114,19 +120,21 @@ func resourceLoviVirtualMachineCreate(ctx context.Context, d *schema.ResourceDat
 	readIOPSSec := d.Get("read_iops_sec").(int)
 	writeIOPSSec := d.Get("write_iops_sec").(int)
 	cpuPinningGroupName := d.Get("cpu_pinning_group_name").(string)
+	europaBackendName := d.Get("europa_backend_name").(string)
 
 	req := &satelitpb.AddVirtualMachineRequest{
-		Name:             name,
-		Vcpus:            uint32(vcpus),
-		MemoryKib:        uint64(memoryKib),
-		RootVolumeGb:     uint32(rootVolumeGB),
-		SourceImageId:    sourceImageID,
-		HypervisorName:   hypervisorName,
-		ReadBytesSec:     uint32(readBytesSec),
-		WriteBytesSec:    uint32(writeBytesSec),
-		ReadIopsSec:      uint32(readIOPSSec),
-		WriteIopsSec:     uint32(writeIOPSSec),
-		PinningGroupName: cpuPinningGroupName,
+		Name:              name,
+		Vcpus:             uint32(vcpus),
+		MemoryKib:         uint64(memoryKib),
+		RootVolumeGb:      uint32(rootVolumeGB),
+		SourceImageId:     sourceImageID,
+		HypervisorName:    hypervisorName,
+		ReadBytesSec:      uint32(readBytesSec),
+		WriteBytesSec:     uint32(writeBytesSec),
+		ReadIopsSec:       uint32(readIOPSSec),
+		WriteIopsSec:      uint32(writeIOPSSec),
+		PinningGroupName:  cpuPinningGroupName,
+		EuropaBackendName: europaBackendName,
 	}
 	resp, err := client.AddVirtualMachine(ctx, req)
 	if err != nil {
@@ -172,6 +180,7 @@ func resourceLoviVirtualMachineRead(ctx context.Context, d *schema.ResourceData,
 	d.Set("read_iops_sec", resp.VirtualMachine.ReadIopsSec)
 	d.Set("write_iops_sec", resp.VirtualMachine.WriteIopsSec)
 	d.Set("cpu_pinning_group_name", resp.VirtualMachine.PinningGroupName)
+	d.Set("europa_backend_name", resp.VirtualMachine.EuropaBackendName)
 
 	return diags
 }
