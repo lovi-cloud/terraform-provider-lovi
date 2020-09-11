@@ -37,6 +37,12 @@ func resourceLoviVolume() *schema.Resource {
 				Description:  "GB",
 				ValidateFunc: validation.IntAtLeast(1),
 			},
+			"backend_name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "europa's backend name",
+			},
 		},
 	}
 }
@@ -51,6 +57,7 @@ func resourceLoviVolumeCreate(ctx context.Context, d *schema.ResourceData, meta 
 	req := &satelitpb.AddVolumeRequest{
 		Name:             d.Get("name").(string),
 		CapacityGigabyte: uint32(sizeInt),
+		BackendName:      d.Get("backend_name").(string),
 	}
 	resp, err := client.AddVolume(ctx, req)
 	if err != nil {
@@ -88,6 +95,7 @@ func resourceLoviVolumeRead(ctx context.Context, d *schema.ResourceData, meta in
 	d.Set("attached", resp.Volume.Attached)
 	d.Set("hostname", resp.Volume.Hostname)
 	d.Set("capacity_byte", resp.Volume.CapacityGigabyte)
+	d.Set("backend_name", resp.Volume.BackendName)
 
 	return diags
 }
