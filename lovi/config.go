@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	satelitpb "github.com/whywaita/satelit/api/satelit"
+	satelitpb "github.com/lovi-cloud/satelit/api/satelit"
 	"google.golang.org/grpc"
 )
 

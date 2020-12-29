@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
-	satelitpb "github.com/whywaita/satelit/api/satelit"
+	satelitpb "github.com/lovi-cloud/satelit/api/satelit"
 )
 
 func resourceLoviVolume() *schema.Resource {
