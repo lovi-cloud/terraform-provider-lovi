@@ -5,11 +5,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-
-	satelitpb "github.com/whywaita/satelit/api/satelit"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+
+	satelitpb "github.com/lovi-cloud/satelit/api/satelit"
 )
 
 func resourceLoviVirtualMachine() *schema.Resource {
