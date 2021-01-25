@@ -66,7 +66,7 @@ resource "lovi_virtual_machine" "vm-1" {
   vcpus               = 2
   memory_kib          = 1 * 1024 * 1024
   root_volume_gb      = 30
-  source_image_id     = "00000000-0000-0000-0000-000000000000""
+  source_image_id     = "00000000-0000-0000-0000-000000000000"
   hypervisor_name     = "hv0001"
   europa_backend_name = "europa001"
 
